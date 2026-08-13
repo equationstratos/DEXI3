@@ -3,248 +3,194 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DEXI 3 — Build Visualizer · pièces STEP exactes</title>
+<title>DEXI 3 — Build Visualizer · CAD officiel</title>
 <style>
-:root{--bg:#0a0e14;--fg:#e9eef5;--accent:#3b82f6;--panel:#121820;--green:#22c55e;--orange:#f59e0b}
+:root{--bg:#0b1622;--fg:#eaf4fb;--accent:#00A7E1;--panel:#0e2236;--green:#37e0a0;--orange:#ffb068}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);height:100vh;display:flex;flex-direction:column}
-header{padding:10px 16px;border-bottom:1px solid #1e2630;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-h1{font-size:1.1rem;font-weight:600}
-h1 small{font-weight:400;opacity:.65;font-size:.8rem}
-.btn{background:#1a2330;border:1px solid #2a3545;color:var(--fg);padding:6px 11px;border-radius:6px;cursor:pointer;font-size:.82rem}
-.btn:hover{background:#243044}
-.btn.green{background:var(--green);color:#052e16;border-color:var(--green);font-weight:600}
-.btn.orange{background:var(--orange);color:#1c1000;border-color:var(--orange);font-weight:600}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--fg);height:100vh;display:flex;flex-direction:column}
+header{padding:12px 18px;border-bottom:1px solid #1c3950;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(180deg,#0e2236,#0b1622)}
+h1{font-size:1.15rem;font-weight:800}
+h1 small{font-weight:500;opacity:.7;font-size:.8rem}
+.btn{background:#16304a;border:1px solid #1c3950;color:var(--fg);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600}
+.btn:hover{background:#1c3950}
+.btn.green{background:var(--green);color:#04222f;border-color:var(--green)}
+.btn.orange{background:var(--orange);color:#2a1500;border-color:var(--orange)}
 main{flex:1;display:flex;overflow:hidden}
-#sidebar{width:270px;background:var(--panel);border-right:1px solid #1e2630;padding:12px;overflow-y:auto;font-size:.84rem}
+#sidebar{width:280px;background:var(--panel);border-right:1px solid #1c3950;padding:14px;overflow-y:auto;font-size:.84rem}
 #viewport{flex:1;position:relative}
 canvas{display:block;width:100%;height:100%}
-.tip{position:absolute;bottom:8px;left:10px;font-size:.72rem;opacity:.5}
-h2{font-size:.9rem;margin:10px 0 6px;color:#94a3b8}
+.tip{position:absolute;bottom:10px;left:12px;font-size:.72rem;opacity:.55}
+h2{font-size:.9rem;margin:12px 0 6px;color:#9fc0d6;font-weight:700}
 ul{list-style:none}
-li{padding:4px 0;border-bottom:1px solid #1a2230;display:flex;justify-content:space-between;align-items:center}
-.badge{background:#14532d;color:#86efac;padding:1px 5px;border-radius:3px;font-size:.68rem}
-.hint{font-size:.75rem;opacity:.7;line-height:1.4;margin-top:8px}
+li{padding:5px 0;border-bottom:1px solid #16304a;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.badge{background:#00A7E133;color:#00A7E1;padding:2px 6px;border-radius:4px;font-size:.68rem;font-weight:700}
+.hint{font-size:.75rem;opacity:.75;line-height:1.45;margin-top:10px;color:#9fc0d6}
 a{color:var(--accent)}
-.view-btns{position:absolute;top:10px;right:10px;display:flex;gap:3px}
-.view-btns button{background:#1a2330;border:1px solid #2a3545;color:var(--fg);padding:4px 8px;border-radius:4px;cursor:pointer;font-size:.72rem}
-.view-btns button.on{background:var(--accent);border-color:var(--accent)}
-#status{position:absolute;top:10px;left:10px;font-size:.75rem;opacity:.9;background:#121820cc;padding:5px 10px;border-radius:5px}
+.view-btns{position:absolute;top:12px;right:12px;display:flex;gap:4px}
+.view-btns button{background:#16304a;border:1px solid #1c3950;color:var(--fg);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600}
+.view-btns button.on{background:var(--accent);border-color:var(--accent);color:#04222f}
+#status{position:absolute;top:12px;left:12px;font-size:.78rem;opacity:.95;background:#0e2236ee;padding:6px 12px;border-radius:8px;border:1px solid #1c3950}
 </style>
 </head>
 <body>
 <header>
-  <h1>DEXI 3 <small>— pièces 3D exactes (STEP DroneBlocks)</small></h1>
+  <h1>DEXI 3 <small>— CAD officiel Onshape (même source que le simulateur)</small></h1>
   <button class="btn green" id="btn-assemble">▶ Assembler</button>
   <button class="btn orange" id="btn-explode">Vue éclatée</button>
   <button class="btn" id="btn-reset">Reset</button>
   <a class="btn" href="https://github.com/equationstratos/DEXI3" target="_blank">Repo</a>
+  <a class="btn" href="https://groundschool.dexisim.io/build-a-dexi.html" target="_blank">Simulateur officiel</a>
 </header>
 <main>
   <aside id="sidebar">
-    <h2>Châssis (STEP exact)</h2>
-    <ul>
-      <li>Landing Gear <span class="badge">STL exact</span></li>
-      <li>Battery Mount <span class="badge">STL exact</span></li>
-      <li>LED Ring <span class="badge">STL exact</span></li>
-      <li>Antenna Mount <span class="badge">STL exact</span></li>
-      <li>Top/Bottom Plate <span class="badge">204 mm</span></li>
-    </ul>
-    <h2>Propulsion</h2>
-    <ul>
-      <li>RCINPOWER GTS V3 4680KV ×4</li>
-      <li>Gemfan 3018 Tri-Blade ×4</li>
-    </ul>
+    <h2>Pièces CAD (Onshape)</h2>
+    <ul id="part-list"></ul>
     <p class="hint">
-      Landing Gear, Battery Mount, LED Ring, Antenna Mount = géométries exactes converties des STEP officiels.<br>
-      Plaques X-frame à l’échelle 204 mm des STEP.
+      Exactement les mêmes GLB que le simulateur officiel Ground School.<br>
+      Source STEP Onshape → cascadio → GLB.<br>
+      Unités mètres · positions du manifeste.
     </p>
   </aside>
   <div id="viewport">
-    <div id="status">Chargement pièces STL exactes…</div>
+    <div id="status">Chargement des pièces CAD officielles…</div>
     <div class="view-btns">
       <button data-view="iso" class="on">ISO</button>
       <button data-view="top">Dessus</button>
       <button data-view="front">Avant</button>
       <button data-view="side">Côté</button>
     </div>
-    <div class="tip">Orbite · Zoom · Pan</div>
+    <div class="tip">Orbite · Zoom · Pan — pièces CAD officielles</div>
   </div>
 </main>
 <script type="importmap">
 {"imports":{
-  "three":"https://unpkg.com/three@0.160.0/build/three.module.js",
-  "three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/",
-  "./assets/stl-data.js":"./assets/stl-data.js"
+  "three":"https://unpkg.com/three@0.163.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.163.0/examples/jsm/"
 }}
 </script>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { STLLoader } from 'three/addons/loaders/STLLoader.js';
-import { STL_B64 } from './assets/stl-data.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+
+const BASE = 'https://groundschool.dexisim.io/assets/dexi3-assembly/';
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0e14);
-const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 5000);
-camera.position.set(240, 160, 240);
+scene.background = new THREE.Color(0x0b1622);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.001, 10);
+camera.position.set(0.28, 0.18, 0.28);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
 document.getElementById('viewport').appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.target.set(0, 12, 0);
+controls.target.set(0, 0.01, 0);
+controls.minDistance = 0.08;
+controls.maxDistance = 1.2;
 
-scene.add(new THREE.HemisphereLight(0xbcd4ff, 0x0a0a12, 0.55));
-const dir = new THREE.DirectionalLight(0xffffff, 1.2);
-dir.position.set(120, 200, 80);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+scene.add(new THREE.HemisphereLight(0xbcd4ff, 0x0a0a12, 0.6));
+const dir = new THREE.DirectionalLight(0xffffff, 1.35);
+dir.position.set(0.4, 0.8, 0.3);
 scene.add(dir);
-scene.add(new THREE.AmbientLight(0x404860, 0.4));
-scene.add(new THREE.GridHelper(400, 40, 0x1e2630, 0x151c26));
+scene.add(new THREE.AmbientLight(0x404860, 0.35));
 
-const matC = new THREE.MeshStandardMaterial({ color: 0x1c1c1e, metalness: 0.35, roughness: 0.5 });
-const matY = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.2, roughness: 0.45 });
-const matA = new THREE.MeshStandardMaterial({ color: 0xa1a1aa, metalness: 0.8, roughness: 0.25 });
-const matB = new THREE.MeshStandardMaterial({ color: 0x0f0f12, metalness: 0.45, roughness: 0.4 });
-const matBlu = new THREE.MeshStandardMaterial({ color: 0x3b82f6, metalness: 0.2, roughness: 0.5 });
-const matP = new THREE.MeshStandardMaterial({ color: 0x1a1a1e, metalness: 0.1, roughness: 0.7, side: THREE.DoubleSide });
-const matPrint = new THREE.MeshStandardMaterial({ color: 0x3f3f46, metalness: 0.15, roughness: 0.65 });
+const grid = new THREE.GridHelper(0.5, 20, 0x1c3950, 0x122536);
+grid.position.y = -0.04;
+scene.add(grid);
 
 const root = new THREE.Group();
 scene.add(root);
+
+const loader = new GLTFLoader();
+loader.setMeshoptDecoder(MeshoptDecoder);
+
 const parts = {};
-const orig = {};
-
-function add(name, obj) {
-  parts[name] = obj;
-  root.add(obj);
-  orig[name] = obj.position.clone();
-  return obj;
-}
-
-function b64ToArrayBuffer(b64) {
-  const bin = atob(b64);
-  const bytes = new Uint8Array(bin.length);
-  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-  return bytes.buffer;
-}
-
-function centerGeometry(geo) {
-  geo.computeBoundingBox();
-  const c = new THREE.Vector3();
-  geo.boundingBox.getCenter(c);
-  geo.translate(-c.x, -c.y, -c.z);
-  return geo;
-}
-
-const loader = new STLLoader();
-const statusEl = document.getElementById('status');
+const origPos = {};
+const explodeDir = {};
+const explodeDist = {};
 let loaded = 0;
-const totalSTL = Object.keys(STL_B64 || {}).length || 0;
 
-function loadSTL(name, b64, material, opts = {}) {
-  if (!b64) return null;
-  try {
-    const buf = b64ToArrayBuffer(b64);
-    const geo = loader.parse(buf);
-    centerGeometry(geo);
-    geo.computeVertexNormals();
-    const mesh = new THREE.Mesh(geo, material);
-    if (opts.rotX) mesh.rotation.x = opts.rotX;
-    if (opts.pos) mesh.position.set(...opts.pos);
-    add(name, mesh);
-    loaded++;
-    statusEl.textContent = `pièces exactes ${loaded}/${totalSTL}`;
-    return mesh;
-  } catch (e) {
-    console.error(name, e);
-    loaded++;
-    return null;
+const statusEl = document.getElementById('status');
+const partList = document.getElementById('part-list');
+
+function tuneMaterial(mat) {
+  if (!mat) return;
+  if (mat.isMeshStandardMaterial || mat.isMeshPhysicalMaterial) {
+    mat.metalness = Math.min(mat.metalness ?? 0.2, 0.35);
+    mat.roughness = Math.max(mat.roughness ?? 0.5, 0.4);
+    mat.envMapIntensity = 0.65;
   }
 }
 
-// Real STLs if available
-if (STL_B64) {
-  loadSTL('landing', STL_B64['DEXI_3_Landing_Gear.stl'], matB, { rotX: -Math.PI/2, pos: [0, -12, 0] });
-  loadSTL('led', STL_B64['DEXI_3_LED_Ring.stl'], matY, { rotX: -Math.PI/2, pos: [0, 5, 0] });
-  loadSTL('batmount', STL_B64['DEXI_3_Battery_Mount.stl'], matPrint, { rotX: -Math.PI/2, pos: [0, -8, 0] });
-  loadSTL('antmount', STL_B64['DEXI_3_Antenna_Mount_V3.stl'], matPrint, { rotX: -Math.PI/2, pos: [0, 18, -50] });
+async function loadAll() {
+  const res = await fetch(BASE + 'manifest.json');
+  const manifest = await res.json();
+  const comps = manifest.components;
+
+  for (const c of comps) {
+    const li = document.createElement('li');
+    li.innerHTML = `${c.label || c.id} <span class="badge">CAD</span>`;
+    partList.appendChild(li);
+
+    const meshPath = c.parts?.[0]?.mesh;
+    if (!meshPath) continue;
+
+    const url = BASE + meshPath;
+    try {
+      const gltf = await new Promise((resolve, reject) => {
+        loader.load(url, resolve, undefined, reject);
+      });
+      const obj = gltf.scene;
+      obj.traverse(ch => {
+        if (ch.isMesh) {
+          ch.castShadow = true;
+          ch.receiveShadow = true;
+          if (Array.isArray(ch.material)) ch.material.forEach(tuneMaterial);
+          else tuneMaterial(ch.material);
+        }
+      });
+      const t = c.parts[0].transform;
+      if (t && t.length === 16) {
+        const m = new THREE.Matrix4().fromArray(t);
+        obj.applyMatrix4(m);
+      }
+      root.add(obj);
+      parts[c.id] = obj;
+      origPos[c.id] = obj.position.clone();
+      explodeDir[c.id] = new THREE.Vector3(...(c.explode || [0,1,0])).normalize();
+      explodeDist[c.id] = c.explodeDist || 0.12;
+      loaded++;
+      statusEl.textContent = `Chargé ${loaded}/${comps.length} pièces CAD…`;
+    } catch (e) {
+      console.warn('fail', c.id, e);
+    }
+  }
+  statusEl.textContent = `✓ ${loaded} pièces CAD officielles (même source que le simulateur)`;
+  setTimeout(() => { statusEl.style.opacity = '0.6'; }, 2500);
 }
 
-// X-frame plates (scale from STEP 204 mm)
-const PLATE_T = 2.2, STANDOFF = 32, ARM_LEN = 95, MOTOR_R = 14;
-const body = new THREE.Mesh(new THREE.BoxGeometry(58, PLATE_T, 58), matC);
-body.position.y = 0; add('bodyBottom', body);
-const bodyTop = new THREE.Mesh(new THREE.BoxGeometry(48, PLATE_T, 48), matC);
-bodyTop.position.y = STANDOFF; add('bodyTop', bodyTop);
-
-const motorPos = [[1,1],[1,-1],[-1,1],[-1,-1]];
-motorPos.forEach(([sx, sz], i) => {
-  const x = sx * 72, z = sz * 72;
-  const arm = new THREE.Mesh(new THREE.BoxGeometry(16, PLATE_T+1, ARM_LEN), matC);
-  arm.position.set(x*0.55, PLATE_T/2, z*0.55);
-  arm.lookAt(x*1.4, PLATE_T/2, z*1.4);
-  add('arm'+i, arm);
-  const pad = new THREE.Mesh(new THREE.CylinderGeometry(MOTOR_R, MOTOR_R, PLATE_T+0.5, 20), matC);
-  pad.position.set(x, PLATE_T/2, z);
-  add('pad'+i, pad);
-  const armT = new THREE.Mesh(new THREE.BoxGeometry(14, PLATE_T, ARM_LEN*0.7), matC);
-  armT.position.set(x*0.45, STANDOFF, z*0.45);
-  armT.lookAt(x*1.2, STANDOFF, z*1.2);
-  add('armT'+i, armT);
-});
-
-[[25,25],[25,-25],[-25,25],[-25,-25],[0,30],[0,-30],[30,0],[-30,0]].forEach(([x,z], i) => {
-  const s = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, STANDOFF, 8), matA);
-  s.position.set(x, STANDOFF/2, z);
-  add('standoff'+i, s);
-});
-
-motorPos.forEach(([sx, sz], i) => {
-  const x = sx * 78, z = sz * 78;
-  const mg = new THREE.Group();
-  const bodyM = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 18, 24), matA);
-  bodyM.rotation.x = Math.PI/2; bodyM.position.y = 14; mg.add(bodyM);
-  const bell = new THREE.Mesh(new THREE.CylinderGeometry(12.5, 12.5, 5, 24), matB);
-  bell.rotation.x = Math.PI/2; bell.position.y = 14+9+2.5; mg.add(bell);
-  const prop = new THREE.Group();
-  for (let b=0; b<3; b++) {
-    const blade = new THREE.Mesh(new THREE.BoxGeometry(62, 1.3, 8), matP);
-    blade.position.x = 20; blade.rotation.z = 0.13;
-    const g = new THREE.Group(); g.add(blade); g.rotation.y = b*Math.PI*2/3; prop.add(g);
-  }
-  prop.position.y = 14+9+7; mg.add(prop);
-  mg.position.set(x, 2, z);
-  add('motor'+i, mg);
-});
-
-const stack = new THREE.Mesh(new THREE.BoxGeometry(34, 13, 34), matBlu);
-stack.position.set(0, STANDOFF/2, 0); add('stack', stack);
-
-const bat = new THREE.Mesh(new THREE.BoxGeometry(32, 20, 88), matY);
-bat.position.set(0, -18, 0); add('battery', bat);
-
-const cam = new THREE.Mesh(new THREE.BoxGeometry(18, 14, 12), matB);
-cam.position.set(0, 18, 58); add('camera', cam);
-
-const ant = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 55, 8), matB);
-ant.position.set(0, 45, -50); add('antenna', ant);
-
-statusEl.textContent = `✓ ${loaded} pièces STL exactes + X-frame 204 mm`;
-setTimeout(() => statusEl.style.opacity = '0.55', 2500);
+loadAll();
 
 let exploded = false;
 function setExplode(on) {
   exploded = on;
   const k = on ? 1 : 0;
-  Object.keys(parts).forEach((name, i) => {
-    const p = orig[name];
-    const dir = new THREE.Vector3(p.x || 0.01, p.y || 0.5, p.z || 0.01).normalize();
-    parts[name].position.set(
-      p.x + dir.x * 50 * k * (1 + (i%5)*0.12),
-      p.y + dir.y * 32 * k,
-      p.z + dir.z * 50 * k * (1 + (i%5)*0.12)
+  Object.keys(parts).forEach(id => {
+    const p = origPos[id];
+    const dir = explodeDir[id] || new THREE.Vector3(0,1,0);
+    const dist = explodeDist[id] || 0.12;
+    parts[id].position.set(
+      p.x + dir.x * dist * k,
+      p.y + dir.y * dist * k,
+      p.z + dir.z * dist * k
     );
   });
 }
@@ -262,10 +208,6 @@ resize();
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
-  for (let i=0; i<4; i++) {
-    const m = parts['motor'+i];
-    if (m && m.children[2]) m.children[2].rotation.y += 0.08;
-  }
   renderer.render(scene, camera);
 }
 animate();
@@ -273,8 +215,8 @@ animate();
 document.getElementById('btn-assemble').onclick = () => setExplode(false);
 document.getElementById('btn-explode').onclick = () => setExplode(!exploded);
 document.getElementById('btn-reset').onclick = () => {
-  camera.position.set(240, 160, 240);
-  controls.target.set(0, 12, 0);
+  camera.position.set(0.28, 0.18, 0.28);
+  controls.target.set(0, 0.01, 0);
   controls.update();
   setExplode(false);
 };
@@ -284,10 +226,10 @@ document.querySelectorAll('.view-btns button').forEach(b => {
     document.querySelectorAll('.view-btns button').forEach(x => x.classList.remove('on'));
     b.classList.add('on');
     const v = b.dataset.view;
-    if (v === 'top') { camera.position.set(0, 280, 0.1); controls.target.set(0, 5, 0); }
-    else if (v === 'front') { camera.position.set(0, 40, 240); controls.target.set(0, 12, 0); }
-    else if (v === 'side') { camera.position.set(240, 40, 0); controls.target.set(0, 12, 0); }
-    else { camera.position.set(240, 160, 240); controls.target.set(0, 12, 0); }
+    if (v === 'top') { camera.position.set(0, 0.45, 0.001); controls.target.set(0, 0, 0); }
+    else if (v === 'front') { camera.position.set(0, 0.08, 0.35); controls.target.set(0, 0.01, 0); }
+    else if (v === 'side') { camera.position.set(0.35, 0.08, 0); controls.target.set(0, 0.01, 0); }
+    else { camera.position.set(0.28, 0.18, 0.28); controls.target.set(0, 0.01, 0); }
     controls.update();
   };
 });
