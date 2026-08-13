@@ -1,2 +1,3 @@
-// placeholder - full base64 data will be pushed next
-export const STL_B64 = {};
+export const STL_B64 = {
+  "DEXI_3_Landing_Gear.stl": "PLACEHOLDER_FOR_SIZE",
+};
