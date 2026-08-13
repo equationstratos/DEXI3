@@ -1,0 +1,44 @@
+{
+  "id": "dexi-3",
+  "title": "DEXI-3",
+  "source": {
+    "kind": "onshape",
+    "via": "STEP export (manual, no API) -> cascadio/OCCT -> per-component GLB",
+    "stepFile": "dexi-3.step",
+    "root": "DEXI 3 V2",
+    "documentId": "97aa01a5ad677430348c9a8a",
+    "elementId": "fca0cd337900adee0e3599c7",
+    "exportedAt": "2026-08-13T13:07:52Z",
+    "note": "REAL CAD. Airframe part labels marked inferred were guessed from geometry."
+  },
+  "units": "meters",
+  "upAxis": "Y",
+  "bounds": {
+    "min": [-0.1037, -0.0376, -0.102],
+    "max": [0.1037, 0.0376, 0.102]
+  },
+  "components": [
+    {"id": "frame-bottom", "label": "Lower Frame Plate", "step": 1, "spec": "204 mm ducted airframe", "explode": [0, -1, 0], "explodeDist": 0.091, "parts": [{"name": "frame-bottom", "mesh": "parts/frame-bottom.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "landing-feet", "label": "Landing Feet", "step": 2, "spec": "Four corner skids", "explode": [0, -1, 0], "explodeDist": 0.175, "parts": [{"name": "landing-feet", "mesh": "parts/landing-feet.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "motor-1", "label": "Motor 1", "step": 3, "explode": [-0.698, -0.3, -0.716], "explodeDist": 0.147, "parts": [{"name": "motor-1", "mesh": "parts/motor-1.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "motor-2", "label": "Motor 2", "step": 3, "explode": [0.716, -0.3, -0.698], "explodeDist": 0.147, "parts": [{"name": "motor-2", "mesh": "parts/motor-2.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "motor-3", "label": "Motor 3", "step": 3, "explode": [0.716, -0.3, 0.698], "explodeDist": 0.147, "parts": [{"name": "motor-3", "mesh": "parts/motor-3.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "motor-4", "label": "Motor 4", "step": 3, "explode": [-0.698, -0.3, 0.716], "explodeDist": 0.147, "parts": [{"name": "motor-4", "mesh": "parts/motor-4.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "standoffs-fc", "label": "FC Standoffs", "step": 4, "explode": [0, 1, 0], "explodeDist": 0.09, "parts": [{"name": "standoffs-fc", "mesh": "parts/standoffs-fc.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "flight-controller", "label": "Flight Controller", "step": 5, "explode": [0, 1, 0], "explodeDist": 0.07, "parts": [{"name": "flight-controller", "mesh": "parts/flight-controller.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "carrier-board", "label": "Carrier Board", "step": 6, "explode": [0, 1, 0], "explodeDist": 0.119, "parts": [{"name": "carrier-board", "mesh": "parts/carrier-board.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "companion", "label": "Companion Computer", "step": 7, "explode": [0, 1, 0], "explodeDist": 0.168, "parts": [{"name": "companion", "mesh": "parts/companion.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "camera", "label": "Camera", "step": 8, "explode": [-1, -0.2, 0], "explodeDist": 0.154, "parts": [{"name": "camera", "mesh": "parts/camera.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "rx-receiver", "label": "RX Receiver", "step": 9, "explode": [0, 1, 0], "explodeDist": 0.104, "parts": [{"name": "rx-receiver", "mesh": "parts/rx-receiver.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "standoffs-flow", "label": "Flow Standoffs", "step": 10, "explode": [0, -1, 0], "explodeDist": 0.14, "parts": [{"name": "standoffs-flow", "mesh": "parts/standoffs-flow.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "sensor-module", "label": "Sensor Module", "step": 11, "explode": [0.3, -1, 0.25], "explodeDist": 0.126, "parts": [{"name": "sensor-module", "mesh": "parts/sensor-module.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "standoffs-frame", "label": "Frame Standoffs", "step": 12, "explode": [0, 1, 0], "explodeDist": 0.196, "parts": [{"name": "standoffs-frame", "mesh": "parts/standoffs-frame.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "frame-top", "label": "Upper Frame Plate", "step": 13, "explode": [0, 1, 0], "explodeDist": 0.252, "parts": [{"name": "frame-top", "mesh": "parts/frame-top.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "top-deck", "label": "Top Deck", "step": 14, "explode": [0, 1, 0], "explodeDist": 0.308, "parts": [{"name": "top-deck", "mesh": "parts/top-deck.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "battery-connector", "label": "Battery Connector", "step": 15, "explode": [1, 0.5, 0], "explodeDist": 0.175, "parts": [{"name": "battery-connector", "mesh": "parts/battery-connector.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "prop-1", "label": "Prop 1", "step": 16, "explode": [-0.698, 0.6, -0.716], "explodeDist": 0.224, "parts": [{"name": "prop-1", "mesh": "parts/prop-1.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "prop-2", "label": "Prop 2", "step": 16, "explode": [0.716, 0.6, -0.698], "explodeDist": 0.224, "parts": [{"name": "prop-2", "mesh": "parts/prop-2.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "prop-3", "label": "Prop 3", "step": 16, "explode": [0.716, 0.6, 0.698], "explodeDist": 0.224, "parts": [{"name": "prop-3", "mesh": "parts/prop-3.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]},
+    {"id": "prop-4", "label": "Prop 4", "step": 16, "explode": [-0.698, 0.6, 0.716], "explodeDist": 0.224, "parts": [{"name": "prop-4", "mesh": "parts/prop-4.glb", "transform": [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]}]}
+  ]
+}
