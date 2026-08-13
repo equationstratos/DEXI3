@@ -75,7 +75,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
-const BASE = 'https://groundschool.dexisim.io/assets/dexi3-assembly/';
+const BASE = './assets/dexi3-assembly/';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0b1622);
@@ -131,50 +131,56 @@ function tuneMaterial(mat) {
 }
 
 async function loadAll() {
-  const res = await fetch(BASE + 'manifest.json');
-  const manifest = await res.json();
-  const comps = manifest.components;
+  try {
+    const res = await fetch(BASE + 'manifest.json');
+    const manifest = await res.json();
+    const comps = manifest.components;
 
-  for (const c of comps) {
-    const li = document.createElement('li');
-    li.innerHTML = `${c.label || c.id} <span class="badge">CAD</span>`;
-    partList.appendChild(li);
+    for (const c of comps) {
+      const li = document.createElement('li');
+      li.innerHTML = `${c.label || c.id} <span class="badge">CAD</span>`;
+      partList.appendChild(li);
 
-    const meshPath = c.parts?.[0]?.mesh;
-    if (!meshPath) continue;
+      const meshPath = c.parts?.[0]?.mesh;
+      if (!meshPath) continue;
 
-    const url = BASE + meshPath;
-    try {
-      const gltf = await new Promise((resolve, reject) => {
-        loader.load(url, resolve, undefined, reject);
-      });
-      const obj = gltf.scene;
-      obj.traverse(ch => {
-        if (ch.isMesh) {
-          ch.castShadow = true;
-          ch.receiveShadow = true;
-          if (Array.isArray(ch.material)) ch.material.forEach(tuneMaterial);
-          else tuneMaterial(ch.material);
+      const url = BASE + meshPath;
+      try {
+        const gltf = await new Promise((resolve, reject) => {
+          loader.load(url, resolve, undefined, reject);
+        });
+        const obj = gltf.scene;
+        obj.traverse(ch => {
+          if (ch.isMesh) {
+            ch.castShadow = true;
+            ch.receiveShadow = true;
+            if (Array.isArray(ch.material)) ch.material.forEach(tuneMaterial);
+            else tuneMaterial(ch.material);
+          }
+        });
+        const t = c.parts[0].transform;
+        if (t && t.length === 16) {
+          const m = new THREE.Matrix4().fromArray(t);
+          obj.applyMatrix4(m);
         }
-      });
-      const t = c.parts[0].transform;
-      if (t && t.length === 16) {
-        const m = new THREE.Matrix4().fromArray(t);
-        obj.applyMatrix4(m);
+        root.add(obj);
+        parts[c.id] = obj;
+        origPos[c.id] = obj.position.clone();
+        explodeDir[c.id] = new THREE.Vector3(...(c.explode || [0,1,0])).normalize();
+        explodeDist[c.id] = c.explodeDist || 0.12;
+        loaded++;
+        statusEl.textContent = `Chargé ${loaded}/${comps.length} pièces CAD…`;
+      } catch (e) {
+        console.warn('fail', c.id, e);
+        statusEl.textContent = `Erreur ${c.id} — continue…`;
       }
-      root.add(obj);
-      parts[c.id] = obj;
-      origPos[c.id] = obj.position.clone();
-      explodeDir[c.id] = new THREE.Vector3(...(c.explode || [0,1,0])).normalize();
-      explodeDist[c.id] = c.explodeDist || 0.12;
-      loaded++;
-      statusEl.textContent = `Chargé ${loaded}/${comps.length} pièces CAD…`;
-    } catch (e) {
-      console.warn('fail', c.id, e);
     }
+    statusEl.textContent = `✓ ${loaded} pièces CAD officielles chargées`;
+    setTimeout(() => { statusEl.style.opacity = '0.6'; }, 2500);
+  } catch (e) {
+    statusEl.textContent = 'Erreur chargement manifeste: ' + e.message;
+    console.error(e);
   }
-  statusEl.textContent = `✓ ${loaded} pièces CAD officielles (même source que le simulateur)`;
-  setTimeout(() => { statusEl.style.opacity = '0.6'; }, 2500);
 }
 
 loadAll();
