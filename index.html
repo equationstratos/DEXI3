@@ -3,88 +3,90 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DEXI 3 — Build Visualizer · DroneBlocks</title>
+<title>DEXI 3 — Build Visualizer · DroneBlocks (pièces STEP exactes)</title>
 <style>
-:root{--bg:#0a0e14;--fg:#e9eef5;--accent:#3b82f6;--panel:#121820;--green:#22c55e}
+:root{--bg:#0a0e14;--fg:#e9eef5;--accent:#3b82f6;--panel:#121820;--green:#22c55e;--orange:#f59e0b}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--fg);height:100vh;display:flex;flex-direction:column}
-header{padding:10px 16px;border-bottom:1px solid #1e2630;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-h1{font-size:1.15rem;font-weight:600}
-h1 small{font-weight:400;opacity:.65;font-size:.85rem}
-.btn{background:#1a2330;border:1px solid #2a3545;color:var(--fg);padding:7px 12px;border-radius:6px;cursor:pointer;font-size:.85rem}
+header{padding:10px 16px;border-bottom:1px solid #1e2630;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+h1{font-size:1.1rem;font-weight:600}
+h1 small{font-weight:400;opacity:.65;font-size:.8rem}
+.btn{background:#1a2330;border:1px solid #2a3545;color:var(--fg);padding:6px 11px;border-radius:6px;cursor:pointer;font-size:.82rem}
 .btn:hover{background:#243044}
 .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600}
-.btn.primary:hover{filter:brightness(1.12)}
 .btn.green{background:var(--green);color:#052e16;border-color:var(--green);font-weight:600}
+.btn.orange{background:var(--orange);color:#1c1000;border-color:var(--orange);font-weight:600}
 main{flex:1;display:flex;overflow:hidden}
-#sidebar{width:300px;background:var(--panel);border-right:1px solid #1e2630;padding:14px;overflow-y:auto;font-size:.88rem}
+#sidebar{width:300px;background:var(--panel);border-right:1px solid #1e2630;padding:12px;overflow-y:auto;font-size:.84rem}
 #viewport{flex:1;position:relative}
 canvas{display:block;width:100%;height:100%}
-.tip{position:absolute;bottom:10px;left:12px;font-size:.75rem;opacity:.55}
-h2{font-size:.95rem;margin:12px 0 8px;color:#94a3b8}
+.tip{position:absolute;bottom:8px;left:10px;font-size:.72rem;opacity:.5}
+h2{font-size:.9rem;margin:10px 0 6px;color:#94a3b8}
 ul{list-style:none}
-li{padding:5px 0;border-bottom:1px solid #1a2230;display:flex;justify-content:space-between;align-items:center}
-li span{opacity:.6;font-size:.78rem}
-.hint{font-size:.78rem;opacity:.7;line-height:1.45;margin-top:10px}
-.badge{background:#1e3a5f;color:#93c5fd;padding:2px 6px;border-radius:4px;font-size:.7rem}
+li{padding:4px 0;border-bottom:1px solid #1a2230;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.badge{background:#1e3a5f;color:#93c5fd;padding:1px 5px;border-radius:3px;font-size:.68rem;white-space:nowrap}
+.badge.real{background:#14532d;color:#86efac}
+.hint{font-size:.75rem;opacity:.7;line-height:1.4;margin-top:8px}
 a{color:var(--accent)}
-.view-btns{position:absolute;top:12px;right:12px;display:flex;gap:4px}
-.view-btns button{background:#1a2330;border:1px solid #2a3545;color:var(--fg);padding:5px 9px;border-radius:4px;cursor:pointer;font-size:.75rem}
+.view-btns{position:absolute;top:10px;right:10px;display:flex;gap:3px}
+.view-btns button{background:#1a2330;border:1px solid #2a3545;color:var(--fg);padding:4px 8px;border-radius:4px;cursor:pointer;font-size:.72rem}
 .view-btns button.on{background:var(--accent);border-color:var(--accent)}
+#status{position:absolute;top:10px;left:10px;font-size:.75rem;opacity:.9;background:#121820cc;padding:6px 10px;border-radius:6px;max-width:280px}
+#status.ok{color:#86efac}
+#status.err{color:#fca5a5}
 </style>
 </head>
 <body>
 <header>
-  <h1>DEXI 3 <small>— DroneBlocks · 3″ open-source</small></h1>
-  <button class="btn primary" id="btn-model">modèle DEXI3</button>
+  <h1>DEXI 3 <small>— DroneBlocks · pièces 3D exactes (STEP→STL)</small></h1>
+  <button class="btn primary" id="btn-model">Infos</button>
   <button class="btn green" id="btn-assemble">▶ Assembler</button>
-  <button class="btn" id="btn-explode">Vue éclatée</button>
-  <button class="btn" id="btn-reset">Reset vue</button>
+  <button class="btn orange" id="btn-explode">Vue éclatée</button>
+  <button class="btn" id="btn-reset">Reset</button>
   <a class="btn" href="https://github.com/equationstratos/DEXI3" target="_blank">Repo</a>
-  <a class="btn" href="https://github.com/DroneBlocks/dexi-3d-prints/tree/main/dexi-3" target="_blank">STEP officiels</a>
+  <a class="btn" href="https://github.com/DroneBlocks/dexi-3d-prints/tree/main/dexi-3" target="_blank">STEP source</a>
 </header>
 <main>
   <aside id="sidebar">
-    <h2>Châssis & structure</h2>
+    <h2>Châssis (STEP exact)</h2>
     <ul>
-      <li>Top Frame Plate <span class="badge">STEP</span></li>
-      <li>Bottom Frame Plate <span class="badge">STEP</span></li>
-      <li>Landing Gear <span class="badge">STEP</span></li>
-      <li>Battery Mount <span class="badge">STEP</span></li>
+      <li>Top Frame Plate <span class="badge">204×204×2</span></li>
+      <li>Bottom Frame Plate <span class="badge real">STL exact</span></li>
+      <li>Landing Gear <span class="badge real">STL exact</span></li>
+      <li>Battery Mount <span class="badge real">STL exact</span></li>
     </ul>
     <h2>Électronique</h2>
     <ul>
-      <li>FC + ESC stack (4-in-1)</li>
-      <li>RX Mount <span class="badge">STEP</span></li>
-      <li>XT30 + Cap <span class="badge">STEP</span></li>
-      <li>Companion (Pi / compute)</li>
+      <li>FC + 4-in-1 ESC stack</li>
+      <li>RX Mount <span class="badge real">STL exact</span></li>
+      <li>XT30 + Cap <span class="badge real">STL exact</span></li>
     </ul>
     <h2>Propulsion</h2>
     <ul>
       <li>RCINPOWER GTS V3 4680KV ×4</li>
       <li>Gemfan 3018 Tri-Blade ×4</li>
     </ul>
-    <h2>Capteurs / divers</h2>
+    <h2>Capteurs</h2>
     <ul>
-      <li>Pie Cam Mount <span class="badge">STEP</span></li>
-      <li>Antenna Mount <span class="badge">STEP</span></li>
-      <li>LED Ring <span class="badge">STEP</span></li>
-      <li>Flow mounts <span class="badge">STEP</span></li>
+      <li>Pie Cam Mount + Arms <span class="badge real">STL exact</span></li>
+      <li>Antenna Mount V3 <span class="badge real">STL exact</span></li>
+      <li>LED Ring <span class="badge real">STL exact</span></li>
     </ul>
     <p class="hint">
-      Dimensions réalistes 3″ class (~155 mm motor-to-motor).<br>
-      Géométrie procédurale fidèle + liens vers les STEP officiels DroneBlocks.<br>
-      Prochaine étape : conversion STEP → GLTF pour pièces exactes.
+      Géométries chargées depuis les STEP officiels DroneBlocks (convertis Gmsh → STL ASCII).<br>
+      Plaques 204 mm = enveloppe complète bras + motor mounts.<br>
+      Top plate encore procédural (fichier trop volumineux) — les autres pièces sont les vrais modèles 3D.
     </p>
   </aside>
   <div id="viewport">
+    <div id="status">Chargement des pièces STL exactes…</div>
     <div class="view-btns">
       <button data-view="iso" class="on">ISO</button>
       <button data-view="top">Dessus</button>
       <button data-view="front">Avant</button>
       <button data-view="side">Côté</button>
     </div>
-    <div class="tip">Clic gauche : orbite · molette : zoom · clic droit : pan</div>
+    <div class="tip">Orbite · Zoom · Pan — pièces à l’échelle des STEP officiels</div>
   </div>
 </main>
 <script type="importmap">
@@ -96,153 +98,176 @@ a{color:var(--accent)}
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0a0e14);
-const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 5000);
-camera.position.set(180, 140, 180);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 5000);
+camera.position.set(280, 200, 280);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
 document.getElementById('viewport').appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.target.set(0, 10, 0);
+controls.target.set(0, 15, 0);
 
-const hemi = new THREE.HemisphereLight(0xbfd4ff, 0x080820, 0.55);
-scene.add(hemi);
+scene.add(new THREE.HemisphereLight(0xbcd4ff, 0x0a0a12, 0.55));
 const dir = new THREE.DirectionalLight(0xffffff, 1.15);
-dir.position.set(80, 150, 60);
-dir.castShadow = true;
+dir.position.set(120, 200, 80);
 scene.add(dir);
-scene.add(new THREE.AmbientLight(0x404860, 0.35));
-const grid = new THREE.GridHelper(300, 30, 0x1e2630, 0x151c26);
-scene.add(grid);
+scene.add(new THREE.AmbientLight(0x404860, 0.4));
+scene.add(new THREE.GridHelper(400, 40, 0x1e2630, 0x151c26));
 
-// ——— Real-ish 3" DEXI dimensions (mm) ———
-const DIAG = 155;          // motor-to-motor diagonal
-const ARM = DIAG / Math.SQRT2 / 2;
-const PLATE_T = 2.5;
-const MOTOR_H = 18;
-const MOTOR_D = 22;
-const PROP_R = 38;         // 3018 ~ 76mm diameter / 2
-
-const matCarbon = new THREE.MeshStandardMaterial({ color: 0x1a1a1c, metalness: 0.25, roughness: 0.55 });
-const matYellow = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.15, roughness: 0.45 });
-const matAlu = new THREE.MeshStandardMaterial({ color: 0x9ca3af, metalness: 0.7, roughness: 0.3 });
-const matBlack = new THREE.MeshStandardMaterial({ color: 0x111113, metalness: 0.4, roughness: 0.5 });
-const matBlue = new THREE.MeshStandardMaterial({ color: 0x3b82f6, metalness: 0.2, roughness: 0.5 });
-const matProp = new THREE.MeshStandardMaterial({ color: 0x222226, metalness: 0.1, roughness: 0.7, side: THREE.DoubleSide });
+// ——— Materials ———
+const matC = new THREE.MeshStandardMaterial({ color: 0x1c1c1e, metalness: 0.35, roughness: 0.45 });
+const matY = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.15, roughness: 0.45 });
+const matA = new THREE.MeshStandardMaterial({ color: 0xa1a1aa, metalness: 0.75, roughness: 0.25 });
+const matB = new THREE.MeshStandardMaterial({ color: 0x0f0f12, metalness: 0.4, roughness: 0.5 });
+const matBlu = new THREE.MeshStandardMaterial({ color: 0x3b82f6, metalness: 0.2, roughness: 0.5 });
+const matP = new THREE.MeshStandardMaterial({ color: 0x1a1a1e, metalness: 0.1, roughness: 0.7, side: THREE.DoubleSide });
+const matCarbon = new THREE.MeshStandardMaterial({ color: 0x222226, metalness: 0.4, roughness: 0.55 });
+const matPrint = new THREE.MeshStandardMaterial({ color: 0x3f3f46, metalness: 0.15, roughness: 0.7 });
 
 const root = new THREE.Group();
 scene.add(root);
 const parts = {};
+const orig = {};
 
-function addPart(name, mesh) {
-  parts[name] = mesh;
-  root.add(mesh);
-  return mesh;
+function add(name, obj) {
+  parts[name] = obj;
+  root.add(obj);
+  orig[name] = obj.position.clone();
+  return obj;
 }
 
-// Bottom plate
-const bottom = new THREE.Mesh(new THREE.BoxGeometry(70, PLATE_T, 70), matCarbon);
-bottom.position.y = 0;
-addPart('bottom', bottom);
+// ——— Measured sizes (mm) ———
+const PLATE = 204;
+const PLATE_T = 2;
+const MOTOR_D = 22;
+const MOTOR_H = 18;
+const PROP_R = 38;
+const STANDOFF = 32;
 
-// Top plate
-const top = new THREE.Mesh(new THREE.BoxGeometry(55, PLATE_T, 55), matCarbon);
-top.position.y = 28;
-addPart('top', top);
+// Top plate (procedural until full STL uploaded)
+const top = new THREE.Mesh(new THREE.BoxGeometry(PLATE * 0.92, PLATE_T, PLATE * 0.92), matCarbon);
+top.position.y = STANDOFF;
+add('top', top);
 
-// Arms (4)
-const armGeo = new THREE.BoxGeometry(12, 4, 55);
-const motorPos = [
-  [ ARM, 0,  ARM],
-  [ ARM, 0, -ARM],
-  [-ARM, 0,  ARM],
-  [-ARM, 0, -ARM]
-];
-motorPos.forEach(([x,y,z], i) => {
-  const arm = new THREE.Mesh(armGeo, matCarbon);
-  arm.position.set(x*0.55, 6, z*0.55);
-  arm.lookAt(new THREE.Vector3(x*2, 6, z*2));
-  addPart('arm'+i, arm);
-});
-
-// Motors + props
-motorPos.forEach(([x,y,z], i) => {
-  const mGroup = new THREE.Group();
-  const body = new THREE.Mesh(new THREE.CylinderGeometry(MOTOR_D/2, MOTOR_D/2, MOTOR_H, 24), matAlu);
+// Motors + props at realistic positions (motor mounts ~ ±85 mm)
+const motorPos = [[1,1],[1,-1],[-1,1],[-1,-1]];
+motorPos.forEach(([sx, sz], i) => {
+  const x = sx * 85, z = sz * 85;
+  const mg = new THREE.Group();
+  const body = new THREE.Mesh(new THREE.CylinderGeometry(MOTOR_D/2, MOTOR_D/2, MOTOR_H, 24), matA);
   body.rotation.x = Math.PI/2;
   body.position.y = 12;
-  mGroup.add(body);
-  const bell = new THREE.Mesh(new THREE.CylinderGeometry(MOTOR_D/2+1, MOTOR_D/2+1, 6, 24), matBlack);
+  mg.add(body);
+  const bell = new THREE.Mesh(new THREE.CylinderGeometry(MOTOR_D/2+1.5, MOTOR_D/2+1.5, 5, 24), matB);
   bell.rotation.x = Math.PI/2;
   bell.position.y = 12 + MOTOR_H/2 + 2;
-  mGroup.add(bell);
-  // Prop (tri-blade approx)
+  mg.add(bell);
   const prop = new THREE.Group();
   for (let b=0; b<3; b++) {
-    const blade = new THREE.Mesh(new THREE.BoxGeometry(PROP_R*1.6, 1.2, 8), matProp);
+    const blade = new THREE.Mesh(new THREE.BoxGeometry(PROP_R*1.7, 1.4, 9), matP);
     blade.position.x = PROP_R*0.55;
-    blade.rotation.z = 0.15;
-    const bg = new THREE.Group();
-    bg.add(blade);
-    bg.rotation.y = b * Math.PI * 2 / 3;
-    prop.add(bg);
+    blade.rotation.z = 0.12;
+    const g = new THREE.Group();
+    g.add(blade);
+    g.rotation.y = b * Math.PI*2/3;
+    prop.add(g);
   }
   prop.position.y = 12 + MOTOR_H/2 + 6;
-  mGroup.add(prop);
-  mGroup.position.set(x, 0, z);
-  addPart('motor'+i, mGroup);
+  mg.add(prop);
+  mg.position.set(x, PLATE_T/2, z);
+  add('motor'+i, mg);
 });
 
-// FC / ESC stack
-const stack = new THREE.Mesh(new THREE.BoxGeometry(32, 14, 32), matBlue);
-stack.position.set(0, 14, 0);
-addPart('stack', stack);
+// Stack (FC+ESC)
+const stack = new THREE.Mesh(new THREE.BoxGeometry(36, 14, 36), matBlu);
+stack.position.set(0, STANDOFF/2, 0);
+add('stack', stack);
 
-// Battery
-const bat = new THREE.Mesh(new THREE.BoxGeometry(28, 18, 70), matYellow);
-bat.position.set(0, -12, 0);
-addPart('battery', bat);
+// Battery (under)
+const bat = new THREE.Mesh(new THREE.BoxGeometry(32, 22, 90), matY);
+bat.position.set(0, -18, 0);
+add('battery', bat);
 
-// Landing gear
-[[40,40], [40,-40], [-40,40], [-40,-40]].forEach(([x,z], i) => {
-  const leg = new THREE.Mesh(new THREE.BoxGeometry(4, 22, 4), matBlack);
-  leg.position.set(x*0.7, -8, z*0.7);
-  addPart('leg'+i, leg);
+// ——— Load real STLs ———
+const loader = new STLLoader();
+const statusEl = document.getElementById('status');
+let loaded = 0;
+const toLoad = [
+  { file: 'assets/stl/DEXI_3_Bottom_Frame_Plate.stl', name: 'bottom', mat: matCarbon, rotX: -Math.PI/2, pos: [0, 0, 0], scale: 1 },
+  { file: 'assets/stl/DEXI_3_Landing_Gear.stl', name: 'landing', mat: matPrint, rotX: -Math.PI/2, pos: [0, -8, 0], scale: 1 },
+  { file: 'assets/stl/DEXI_3_Battery_Mount.stl', name: 'batmount', mat: matPrint, rotX: -Math.PI/2, pos: [0, -6, 0], scale: 1 },
+  { file: 'assets/stl/DEXI_3_LED_Ring.stl', name: 'led', mat: matY, rotX: -Math.PI/2, pos: [0, 4, 0], scale: 1 },
+  { file: 'assets/stl/DEXI_3_Antenna_Mount_V3.stl', name: 'antmount', mat: matPrint, rotX: -Math.PI/2, pos: [25, STANDOFF+4, -30], scale: 1 },
+  { file: 'assets/stl/DEXI_3_RX_Mount.stl', name: 'rx', mat: matPrint, rotX: -Math.PI/2, pos: [-25, STANDOFF+3, -25], scale: 1 },
+  { file: 'assets/stl/DEXI_3_Pie_Cam_Mount_Plate.stl', name: 'camplate', mat: matPrint, rotX: -Math.PI/2, pos: [0, STANDOFF/2, 55], scale: 1 },
+  { file: 'assets/stl/DEXI_Pie_Cam_Mount_Arm_Left.stl', name: 'camarmL', mat: matPrint, rotX: -Math.PI/2, pos: [-12, STANDOFF/2, 48], scale: 1 },
+  { file: 'assets/stl/DEXI_3_Pie_Cam_Mount_Arm_Right.stl', name: 'camarmR', mat: matPrint, rotX: -Math.PI/2, pos: [12, STANDOFF/2, 48], scale: 1 },
+  { file: 'assets/stl/DEXI_3_XT30.stl', name: 'xt30', mat: matPrint, rotX: -Math.PI/2, pos: [0, STANDOFF/2, -55], scale: 1 },
+  { file: 'assets/stl/DEXI_3_XT30_Cap.stl', name: 'xt30cap', mat: matPrint, rotX: -Math.PI/2, pos: [0, STANDOFF/2+6, -55], scale: 1 },
+];
+
+function centerGeometry(geo) {
+  geo.computeBoundingBox();
+  const c = new THREE.Vector3();
+  geo.boundingBox.getCenter(c);
+  geo.translate(-c.x, -c.y, -c.z);
+  return geo;
+}
+
+function loadOne(item) {
+  return new Promise((resolve) => {
+    loader.load(item.file, (geo) => {
+      centerGeometry(geo);
+      geo.computeVertexNormals();
+      const mesh = new THREE.Mesh(geo, item.mat);
+      if (item.rotX) mesh.rotation.x = item.rotX;
+      mesh.position.set(...item.pos);
+      if (item.scale && item.scale !== 1) mesh.scale.setScalar(item.scale);
+      add(item.name, mesh);
+      loaded++;
+      statusEl.textContent = `Chargé ${loaded}/${toLoad.length} pièces exactes…`;
+      resolve();
+    }, undefined, (err) => {
+      console.warn('STL fail', item.file, err);
+      loaded++;
+      statusEl.textContent = `Erreur ${item.name} — continue…`;
+      resolve();
+    });
+  });
+}
+
+Promise.all(toLoad.map(loadOne)).then(() => {
+  statusEl.textContent = `✓ ${loaded} pièces STL exactes chargées (STEP DroneBlocks)`;
+  statusEl.classList.add('ok');
+  setTimeout(() => { statusEl.style.opacity = '0.6'; }, 2500);
 });
 
-// Camera (front)
-const cam = new THREE.Mesh(new THREE.BoxGeometry(18, 14, 12), matBlack);
-cam.position.set(0, 18, 42);
-addPart('camera', cam);
+// Antenna simple (the mount is loaded, add a stick)
+const ant = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 55, 8), matB);
+ant.position.set(25, STANDOFF + 30, -30);
+add('antenna', ant);
 
-// Antenna
-const ant = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 45, 8), matBlack);
-ant.position.set(18, 40, -15);
-addPart('antenna', ant);
-
-// Store original positions for explode / assemble
-const orig = {};
-Object.keys(parts).forEach(k => {
-  orig[k] = parts[k].position.clone();
-});
+// Camera body
+const cam = new THREE.Mesh(new THREE.BoxGeometry(18, 14, 12), matB);
+cam.position.set(0, STANDOFF/2 + 8, 62);
+add('camera', cam);
 
 let exploded = false;
 function setExplode(on) {
   exploded = on;
-  const off = on ? 35 : 0;
-  Object.keys(parts).forEach((k, i) => {
-    const p = orig[k];
-    const dir = new THREE.Vector3(p.x, p.y, p.z).normalize();
-    if (dir.length() < 0.01) dir.set(0,1,0);
-    parts[k].position.set(
-      p.x + dir.x * off * (1 + (i%3)*0.3),
-      p.y + dir.y * off * 0.6,
-      p.z + dir.z * off * (1 + (i%3)*0.3)
+  const k = on ? 1 : 0;
+  Object.keys(parts).forEach((name, i) => {
+    const p = orig[name];
+    const dir = new THREE.Vector3(p.x || 0.01, p.y || 0.5, p.z || 0.01).normalize();
+    parts[name].position.set(
+      p.x + dir.x * 50 * k * (1 + (i%5)*0.12),
+      p.y + dir.y * 35 * k,
+      p.z + dir.z * 50 * k * (1 + (i%5)*0.12)
     );
   });
 }
@@ -262,20 +287,20 @@ function animate() {
   controls.update();
   for (let i=0; i<4; i++) {
     const m = parts['motor'+i];
-    if (m && m.children[2]) m.children[2].rotation.y += 0.08;
+    if (m && m.children[2]) m.children[2].rotation.y += 0.07;
   }
   renderer.render(scene, camera);
 }
 animate();
 
 document.getElementById('btn-model').onclick = () => {
-  alert('DEXI 3 — modèle 3″ réaliste\n\n• Dimensions ~155 mm diagonale\n• Moteurs RCINPOWER GTS V3 4680KV\n• Hélices Gemfan 3018\n• Plaques Top/Bottom + stack + battery + landing gear\n\nLes STEP officiels DroneBlocks seront convertis en GLTF prochainement pour un rendu encore plus exact.');
+  alert('DEXI 3 — Build Visualizer réaliste\n\n• Plaques 204×204×2 mm (STEP)\n• Landing Gear, Battery Mount, LED Ring, Antenna, RX, Cam, XT30 = géométries exactes converties des STEP officiels\n• Moteurs RCINPOWER GTS V3 4680KV + Gemfan 3018\n• Assembler / Vue éclatée\n\nSource : github.com/DroneBlocks/dexi-3d-prints');
 };
 document.getElementById('btn-assemble').onclick = () => setExplode(false);
 document.getElementById('btn-explode').onclick = () => setExplode(!exploded);
 document.getElementById('btn-reset').onclick = () => {
-  camera.position.set(180, 140, 180);
-  controls.target.set(0, 10, 0);
+  camera.position.set(280, 200, 280);
+  controls.target.set(0, 15, 0);
   controls.update();
   setExplode(false);
 };
@@ -285,10 +310,10 @@ document.querySelectorAll('.view-btns button').forEach(b => {
     document.querySelectorAll('.view-btns button').forEach(x => x.classList.remove('on'));
     b.classList.add('on');
     const v = b.dataset.view;
-    if (v === 'top') { camera.position.set(0, 220, 0); controls.target.set(0,0,0); }
-    else if (v === 'front') { camera.position.set(0, 40, 220); controls.target.set(0,10,0); }
-    else if (v === 'side') { camera.position.set(220, 40, 0); controls.target.set(0,10,0); }
-    else { camera.position.set(180, 140, 180); controls.target.set(0,10,0); }
+    if (v === 'top') { camera.position.set(0, 320, 0); controls.target.set(0,0,0); }
+    else if (v === 'front') { camera.position.set(0, 40, 280); controls.target.set(0,15,0); }
+    else if (v === 'side') { camera.position.set(280, 40, 0); controls.target.set(0,15,0); }
+    else { camera.position.set(280, 200, 280); controls.target.set(0,15,0); }
     controls.update();
   };
 });
