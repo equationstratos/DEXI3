@@ -37,6 +37,9 @@ a{color:var(--accent)}
 #part-info { display: none; }
 .spec-box { color: var(--orange); font-size: 0.78rem; margin: 8px 0; font-weight: bold; line-height: 1.4; }
 </style>
+
+<!-- Chargement de GSAP via CDN global (évite les erreurs de modules) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body>
 <header>
@@ -78,12 +81,10 @@ a{color:var(--accent)}
   </div>
 </main>
 
-<!-- Import Map avec GSAP inclus -->
 <script type="importmap">
 {"imports":{
   "three":"https://unpkg.com/three@0.163.0/build/three.module.js",
-  "three/addons/":"https://unpkg.com/three@0.163.0/examples/jsm/",
-  "gsap":"https://unpkg.com/npm:gsap@3.12.5/index.js"
+  "three/addons/":"https://unpkg.com/three@0.163.0/examples/jsm/"
 }}
 </script>
 
@@ -93,7 +94,6 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import gsap from 'gsap';
 
 const BASE = './assets/dexi3-assembly/';
 
@@ -136,8 +136,8 @@ const parts = {};
 const origPos = {};
 const explodeDir = {};
 const explodeDist = {};
-const compData = {};      // Stocke les données du manifest (blurb, specs, step...)
-const raycastTargets = []; // Liste des objets cliquables
+const compData = {};      
+const raycastTargets = []; 
 let loaded = 0;
 let selectedPartId = null;
 
@@ -162,7 +162,6 @@ async function loadAll() {
     for (const c of comps) {
       compData[c.id] = c;
 
-      // Création de l'élément dans la sidebar
       const li = document.createElement('li');
       li.innerHTML = `<span>${c.label || c.id}</span> <span class="badge">Étape ${c.step}</span>`;
       li.onclick = () => selectPart(c.id);
@@ -178,7 +177,6 @@ async function loadAll() {
         });
         const obj = gltf.scene;
         
-        // Attribuer l'ID pour le raycaster au clic 3D
         obj.userData.compId = c.id;
 
         obj.traverse(ch => {
@@ -188,7 +186,6 @@ async function loadAll() {
             if (Array.isArray(ch.material)) ch.material.forEach(tuneMaterial);
             else tuneMaterial(ch.material);
 
-            // Sauvegarder la couleur émissive d'origine pour la surbrillance
             ch.userData.origEmissive = ch.material.emissive ? ch.material.emissive.clone() : new THREE.Color(0x000000);
           }
         });
@@ -223,7 +220,7 @@ async function loadAll() {
 
 loadAll();
 
-// === ANIMATIONS FLUIDES (GSAP) ===
+// === ANIMATIONS FLUIDES (GSAP Global) ===
 function transitionLayout(mode) {
   const keys = Object.keys(parts);
   keys.forEach((id, index) => {
@@ -239,18 +236,16 @@ function transitionLayout(mode) {
       tz = p.z + dir.z * dist;
     } 
     else if (mode === 'flat') {
-      // Disposition en grille propre sur le sol
       const cols = 5;
       const spacing = 0.08;
       const col = index % cols;
       const row = Math.floor(index / cols);
       
       tx = (col - Math.floor(cols / 2)) * spacing;
-      ty = -0.03; // Posé à plat sur le sol
+      ty = -0.03; 
       tz = (row - Math.floor(keys.length / cols / 2)) * spacing;
     }
 
-    // Animation smooth avec GSAP
     gsap.to(obj.position, {
       x: tx, y: ty, z: tz,
       duration: 1.2,
@@ -263,7 +258,7 @@ document.getElementById('btn-assemble').onclick = () => transitionLayout('assemb
 document.getElementById('btn-explode').onclick = () => transitionLayout('explode');
 document.getElementById('btn-flat').onclick = () => transitionLayout('flat');
 
-// === RAYCASTER (Sélection au clic 3D) ===
+// === RAYCASTER (Clic 3D) ===
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
@@ -291,7 +286,6 @@ document.getElementById('viewport').addEventListener('click', (event) => {
   }
 });
 
-// === GESTION DE LA SÉLECTION ET SURBRILLANCE ===
 function selectPart(id) {
   deselectPart();
   selectedPartId = id;
@@ -299,7 +293,6 @@ function selectPart(id) {
   const data = compData[id];
   if (!obj || !data) return;
 
-  // Surbrillance Cyan de la pièce sélectionnée
   obj.traverse(ch => {
     if (ch.isMesh && ch.material) {
       ch.material.emissive.setHex(0x00A7E1);
@@ -307,7 +300,6 @@ function selectPart(id) {
     }
   });
 
-  // Affichage des informations dans la sidebar de gauche
   document.getElementById('default-list').style.display = 'none';
   document.getElementById('part-info').style.display = 'block';
 
@@ -333,7 +325,6 @@ function deselectPart() {
 
 document.getElementById('btn-back-list').onclick = deselectPart;
 
-// === REDIMENSIONNEMENT & BOUCLE ===
 function resize() {
   const vp = document.getElementById('viewport');
   const w = vp.clientWidth, h = vp.clientHeight;
