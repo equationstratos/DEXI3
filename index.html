@@ -221,6 +221,7 @@ async function loadAll() {
 loadAll();
 
 // === ANIMATIONS FLUIDES (GSAP Global) ===
+// === ANIMATIONS FLUIDES (GSAP Global) ===
 function transitionLayout(mode) {
   const keys = Object.keys(parts);
   keys.forEach((id, index) => {
@@ -242,7 +243,7 @@ function transitionLayout(mode) {
       const row = Math.floor(index / cols);
       
       tx = (col - Math.floor(cols / 2)) * spacing;
-      ty = -0.03; 
+      ty = 0.01; // Légèrement au-dessus de la grille (fixe le problème sous la grille)
       tz = (row - Math.floor(keys.length / cols / 2)) * spacing;
     }
 
