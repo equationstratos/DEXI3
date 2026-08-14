@@ -3,79 +3,99 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DEXI 3 — Build Visualizer · CAD officiel</title>
+<title>DEXI 3 — Build Visualizer · Interactif</title>
 <style>
-:root{--bg:#0b1622;--fg:#eaf4fb;--accent:#00A7E1;--panel:#0e2236;--green:#37e0a0;--orange:#ffb068}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--fg);height:100vh;display:flex;flex-direction:column}
-header{padding:12px 18px;border-bottom:1px solid #1c3950;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(180deg,#0e2236,#0b1622)}
-h1{font-size:1.15rem;font-weight:800}
-h1 small{font-weight:500;opacity:.7;font-size:.8rem}
-.btn{background:#16304a;border:1px solid #1c3950;color:var(--fg);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600}
-.btn:hover{background:#1c3950}
-.btn.green{background:var(--green);color:#04222f;border-color:var(--green)}
-.btn.orange{background:var(--orange);color:#2a1500;border-color:var(--orange)}
-main{flex:1;display:flex;overflow:hidden}
-#sidebar{width:280px;background:var(--panel);border-right:1px solid #1c3950;padding:14px;overflow-y:auto;font-size:.84rem}
-#viewport{flex:1;position:relative}
-canvas{display:block;width:100%;height:100%}
-.tip{position:absolute;bottom:10px;left:12px;font-size:.72rem;opacity:.55}
-h2{font-size:.9rem;margin:12px 0 6px;color:#9fc0d6;font-weight:700}
-ul{list-style:none}
-li{padding:5px 0;border-bottom:1px solid #16304a;display:flex;justify-content:space-between;align-items:center;gap:6px}
-.badge{background:#00A7E133;color:#00A7E1;padding:2px 6px;border-radius:4px;font-size:.68rem;font-weight:700}
-.hint{font-size:.75rem;opacity:.75;line-height:1.45;margin-top:10px;color:#9fc0d6}
-a{color:var(--accent)}
-.view-btns{position:absolute;top:12px;right:12px;display:flex;gap:4px}
-.view-btns button{background:#16304a;border:1px solid #1c3950;color:var(--fg);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600}
-.view-btns button.on{background:var(--accent);border-color:var(--accent);color:#04222f}
-#status{position:absolute;top:12px;left:12px;font-size:.78rem;opacity:.95;background:#0e2236ee;padding:6px 12px;border-radius:8px;border:1px solid #1c3950}
+  :root{--bg:#0b1622;--fg:#eaf4fb;--accent:#00A7E1;--panel:#0e2236;--green:#37e0a0;--orange:#ffb068}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--fg);height:100vh;display:flex;flex-direction:column}
+  header{padding:12px 18px;border-bottom:1px solid #1c3950;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:linear-gradient(180deg,#0e2236,#0b1622)}
+  h1{font-size:1.15rem;font-weight:800}
+  h1 small{font-weight:500;opacity:.7;font-size:.8rem}
+  .btn{background:#16304a;border:1px solid #1c3950;color:var(--fg);padding:7px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;font-weight:600; transition: 0.2s;}
+  .btn:hover{background:#1c3950; transform: translateY(-1px);}
+  .btn.green{background:var(--green);color:#04222f;border-color:var(--green)}
+  .btn.orange{background:var(--orange);color:#2a1500;border-color:var(--orange)}
+  .btn.blue{background:var(--accent);color:#04222f;border-color:var(--accent)}
+  main{flex:1;display:flex;overflow:hidden}
+  #sidebar{width:280px;background:var(--panel);border-right:1px solid #1c3950;padding:14px;overflow-y:auto;font-size:.84rem}
+  #viewport{flex:1;position:relative}
+  canvas{display:block;width:100%;height:100%}
+  .tip{position:absolute;bottom:10px;left:12px;font-size:.72rem;opacity:.55; pointer-events: none;}
+  h2{font-size:.9rem;margin:12px 0 6px;color:#9fc0d6;font-weight:700}
+  ul{list-style:none}
+  li{padding:5px 0;border-bottom:1px solid #16304a;display:flex;justify-content:space-between;align-items:center;gap:6px; cursor:pointer;}
+  li:hover { color: var(--accent); }
+  .badge{background:#00A7E133;color:#00A7E1;padding:2px 6px;border-radius:4px;font-size:.68rem;font-weight:700}
+  .hint{font-size:.75rem;opacity:.75;line-height:1.45;margin-top:10px;color:#9fc0d6}
+  a{color:var(--accent)}
+  .view-btns{position:absolute;top:12px;right:12px;display:flex;gap:4px}
+  .view-btns button{background:#16304a;border:1px solid #1c3950;color:var(--fg);padding:5px 10px;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600}
+  .view-btns button.on{background:var(--accent);border-color:var(--accent);color:#04222f}
+  #status{position:absolute;top:12px;left:12px;font-size:.78rem;opacity:.95;background:#0e2236ee;padding:6px 12px;border-radius:8px;border:1px solid #1c3950; pointer-events: none;}
+  
+  /* Panel d'infos pièce */
+  #part-info { display: none; }
+  .spec-text { color: var(--warn, #ffb068); font-size: 0.8rem; margin: 10px 0; font-weight: bold;}
 </style>
 </head>
 <body>
 <header>
-  <h1>DEXI 3 <small>— CAD officiel Onshape (même source que le simulateur)</small></h1>
+  <h1>DEXI 3 <small>— CAD Interactif</small></h1>
   <button class="btn green" id="btn-assemble">▶ Assembler</button>
   <button class="btn orange" id="btn-explode">Vue éclatée</button>
-  <button class="btn" id="btn-reset">Reset</button>
-  <a class="btn" href="https://github.com/equationstratos/DEXI3" target="_blank">Repo</a>
-  <a class="btn" href="https://groundschool.dexisim.io/build-a-dexi.html" target="_blank">Simulateur officiel</a>
+  <button class="btn blue" id="btn-flat">Pièces à plat</button>
 </header>
 <main>
   <aside id="sidebar">
-    <h2>Pièces CAD (Onshape)</h2>
-    <ul id="part-list"></ul>
-    <p class="hint">
-      Exactement les mêmes GLB que le simulateur officiel Ground School.<br>
-      Source STEP Onshape → cascadio → GLB.<br>
-      Unités mètres · positions du manifeste.
-    </p>
+    <!-- Liste par défaut -->
+    <div id="default-list">
+        <h2>Pièces CAD (Onshape)</h2>
+        <ul id="part-list"></ul>
+        <p class="hint">Clique sur une pièce dans la liste ou directement sur le modèle 3D pour voir ses détails.</p>
+    </div>
+
+    <!-- Panel de description (affiché au clic) -->
+    <div id="part-info">
+        <button class="btn" id="btn-back-list" style="width:100%; margin-bottom:15px;">← Retour à la liste</button>
+        <h2 id="info-title" style="color:var(--accent); font-size:1.1rem;">Nom de la pièce</h2>
+        <div class="badge" id="info-step" style="display:inline-block; margin-bottom:10px;">Étape X</div>
+        <div class="spec-text" id="info-spec">Specs...</div>
+        <p class="hint" id="info-blurb" style="font-size:0.85rem; opacity: 1;">Description...</p>
+    </div>
   </aside>
   <div id="viewport">
-    <div id="status">Chargement des pièces CAD officielles…</div>
+    <div id="status">Chargement des pièces CAD…</div>
     <div class="view-btns">
       <button data-view="iso" class="on">ISO</button>
       <button data-view="top">Dessus</button>
       <button data-view="front">Avant</button>
       <button data-view="side">Côté</button>
     </div>
-    <div class="tip">Orbite · Zoom · Pan — pièces CAD officielles</div>
+    <div class="tip">Orbite · Zoom · Pan — Clique sur une pièce pour l'inspecter</div>
   </div>
 </main>
+
+<!-- IMPORT MAP avec GSAP ajouté -->
 <script type="importmap">
-{"imports":{
-  "three":"https://unpkg.com/three@0.163.0/build/three.module.js",
-  "three/addons/":"https://unpkg.com/three@0.163.0/examples/jsm/"
-}}
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.163.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.163.0/examples/jsm/",
+    "gsap": "https://unpkg.com/gsap@3.12.5/index.js"
+  }
+}
 </script>
+
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import gsap from 'gsap'; // Import de GSAP
 
-const BASE = './assets/dexi3-assembly/';
+// === CONFIGURATION ===
+// Laisse './' si ton manifest.json est à la racine de ton repo
+const BASE = './';
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x0b1622);
@@ -102,21 +122,25 @@ dir.position.set(0.4, 0.8, 0.3);
 scene.add(dir);
 scene.add(new THREE.AmbientLight(0x404860, 0.35));
 
-const grid = new THREE.GridHelper(0.5, 20, 0x1c3950, 0x122536);
-grid.position.y = -0.04;
+const grid = new THREE.GridHelper(1, 20, 0x1c3950, 0x122536);
+grid.position.y = 0;
 scene.add(grid);
 
 const root = new THREE.Group();
 scene.add(root);
 
 const loader = new GLTFLoader();
-loader.setMeshoptDecoder(MeshoptDecoder);
 
+// === DONNÉES DES PIÈCES ===
 const parts = {};
 const origPos = {};
 const explodeDir = {};
 const explodeDist = {};
+const compData = {}; // Va stocker les infos du json (blurb, specs)
+const raycastTargets = []; // Les objets qu'on peut cliquer
+
 let loaded = 0;
+let selectedPartId = null;
 
 const statusEl = document.getElementById('status');
 const partList = document.getElementById('part-list');
@@ -137,8 +161,12 @@ async function loadAll() {
     const comps = manifest.components;
 
     for (const c of comps) {
+      compData[c.id] = c; // Sauvegarde des infos (titre, blurb...)
+
+      // Ajouter à la liste HTML
       const li = document.createElement('li');
-      li.innerHTML = `${c.label || c.id} <span class="badge">CAD</span>`;
+      li.innerHTML = `<span>${c.label || c.id}</span> <span class="badge">Étape ${c.step}</span>`;
+      li.onclick = () => selectPart(c.id); // Clic dans la liste
       partList.appendChild(li);
 
       const meshPath = c.parts?.[0]?.mesh;
@@ -149,58 +177,164 @@ async function loadAll() {
         const gltf = await new Promise((resolve, reject) => {
           loader.load(url, resolve, undefined, reject);
         });
+        
         const obj = gltf.scene;
+        obj.userData.compId = c.id; // Identifier l'objet pour le clic
+
         obj.traverse(ch => {
           if (ch.isMesh) {
             ch.castShadow = true;
             ch.receiveShadow = true;
             if (Array.isArray(ch.material)) ch.material.forEach(tuneMaterial);
             else tuneMaterial(ch.material);
+
+            // Sauvegarder la couleur émissive originale pour la surbrillance
+            ch.userData.origEmissive = ch.material.emissive ? ch.material.emissive.clone() : new THREE.Color(0x000000);
           }
         });
+
         const t = c.parts[0].transform;
         if (t && t.length === 16) {
           const m = new THREE.Matrix4().fromArray(t);
           obj.applyMatrix4(m);
         }
+
         root.add(obj);
         parts[c.id] = obj;
+        raycastTargets.push(obj); // Ajouter pour le Raycaster
         origPos[c.id] = obj.position.clone();
         explodeDir[c.id] = new THREE.Vector3(...(c.explode || [0,1,0])).normalize();
         explodeDist[c.id] = c.explodeDist || 0.12;
         loaded++;
-        statusEl.textContent = `Chargé ${loaded}/${comps.length} pièces CAD…`;
+        statusEl.textContent = `Chargé ${loaded}/${comps.length} pièces…`;
       } catch (e) {
         console.warn('fail', c.id, e);
-        statusEl.textContent = `Erreur ${c.id} — continue…`;
       }
     }
-    statusEl.textContent = `✓ ${loaded} pièces CAD officielles chargées`;
-    setTimeout(() => { statusEl.style.opacity = '0.6'; }, 2500);
+    statusEl.textContent = `✓ ${loaded} pièces chargées`;
+    setTimeout(() => { statusEl.style.opacity = '0.0'; }, 2000);
   } catch (e) {
-    statusEl.textContent = 'Erreur chargement manifeste: ' + e.message;
+    statusEl.textContent = 'Erreur manifeste: ' + e.message;
     console.error(e);
   }
 }
-
 loadAll();
 
-let exploded = false;
-function setExplode(on) {
-  exploded = on;
-  const k = on ? 1 : 0;
-  Object.keys(parts).forEach(id => {
+// === ANIMATIONS GSAP (Smooth Transitions) ===
+function animateLayout(state) {
+  const keys = Object.keys(parts);
+  
+  keys.forEach((id, index) => {
+    const obj = parts[id];
     const p = origPos[id];
-    const dir = explodeDir[id] || new THREE.Vector3(0,1,0);
-    const dist = explodeDist[id] || 0.12;
-    parts[id].position.set(
-      p.x + dir.x * dist * k,
-      p.y + dir.y * dist * k,
-      p.z + dir.z * dist * k
-    );
+    let tx = p.x, ty = p.y, tz = p.z;
+
+    if (state === 'explode') {
+      const dir = explodeDir[id];
+      const dist = explodeDist[id];
+      tx = p.x + dir.x * dist;
+      ty = p.y + dir.y * dist;
+      tz = p.z + dir.z * dist;
+    } 
+    else if (state === 'flat') {
+      // Disposer en grille au sol
+      const cols = 5;
+      const spacing = 0.12;
+      const col = index % cols;
+      const row = Math.floor(index / cols);
+      
+      tx = (col - Math.floor(cols/2)) * spacing;
+      ty = 0.01; // Posé au sol
+      tz = (row - Math.floor(keys.length/cols/2)) * spacing;
+    }
+
+    // L'animation magique GSAP
+    gsap.to(obj.position, {
+      x: tx, y: ty, z: tz,
+      duration: 1.2,
+      ease: "power3.inOut" // Effet d'accélération/décélération doux
+    });
   });
 }
 
+document.getElementById('btn-assemble').onclick = () => animateLayout('assemble');
+document.getElementById('btn-explode').onclick = () => animateLayout('explode');
+document.getElementById('btn-flat').onclick = () => animateLayout('flat');
+
+// === RAYCASTER (Clic sur les pièces) ===
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
+document.getElementById('viewport').addEventListener('click', (event) => {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(raycastTargets, true);
+
+  if (intersects.length > 0) {
+    // Remonter pour trouver l'ID du composant
+    let curr = intersects[0].object;
+    let compId = null;
+    while(curr) {
+      if (curr.userData.compId) {
+        compId = curr.userData.compId;
+        break;
+      }
+      curr = curr.parent;
+    }
+    if (compId) selectPart(compId);
+  } else {
+    deselectPart();
+  }
+});
+
+// === LOGIQUE DE SÉLECTION & UI ===
+function selectPart(id) {
+  deselectPart(); // Enlever l'ancienne surbrillance
+  selectedPartId = id;
+  const obj = parts[id];
+  const data = compData[id];
+
+  // 1. Mettre en surbrillance (Cyan)
+  obj.traverse(ch => {
+    if (ch.isMesh && ch.material) {
+      ch.material.emissive.setHex(0x00A7E1); // Couleur accent
+      ch.material.emissiveIntensity = 0.5;
+    }
+  });
+
+  // 2. Mettre à jour la sidebar
+  document.getElementById('default-list').style.display = 'none';
+  document.getElementById('part-info').style.display = 'block';
+  
+  document.getElementById('info-title').innerText = data.label || id;
+  document.getElementById('info-step').innerText = `Étape ${data.step}`;
+  document.getElementById('info-spec').innerText = data.spec || "Pas de spécifications";
+  document.getElementById('info-blurb').innerText = data.blurb || "";
+}
+
+function deselectPart() {
+  if (selectedPartId && parts[selectedPartId]) {
+    // Restaurer la couleur normale
+    parts[selectedPartId].traverse(ch => {
+      if (ch.isMesh && ch.userData.origEmissive) {
+        ch.material.emissive.copy(ch.userData.origEmissive);
+        ch.material.emissiveIntensity = 1;
+      }
+    });
+  }
+  selectedPartId = null;
+  
+  // Remettre la liste par défaut
+  document.getElementById('default-list').style.display = 'block';
+  document.getElementById('part-info').style.display = 'none';
+}
+
+document.getElementById('btn-back-list').onclick = deselectPart;
+
+// === VUES CAMÉRA ===
 function resize() {
   const vp = document.getElementById('viewport');
   const w = vp.clientWidth, h = vp.clientHeight;
@@ -218,25 +352,15 @@ function animate() {
 }
 animate();
 
-document.getElementById('btn-assemble').onclick = () => setExplode(false);
-document.getElementById('btn-explode').onclick = () => setExplode(!exploded);
-document.getElementById('btn-reset').onclick = () => {
-  camera.position.set(0.28, 0.18, 0.28);
-  controls.target.set(0, 0.01, 0);
-  controls.update();
-  setExplode(false);
-};
-
 document.querySelectorAll('.view-btns button').forEach(b => {
   b.onclick = () => {
     document.querySelectorAll('.view-btns button').forEach(x => x.classList.remove('on'));
     b.classList.add('on');
     const v = b.dataset.view;
-    if (v === 'top') { camera.position.set(0, 0.45, 0.001); controls.target.set(0, 0, 0); }
-    else if (v === 'front') { camera.position.set(0, 0.08, 0.35); controls.target.set(0, 0.01, 0); }
-    else if (v === 'side') { camera.position.set(0.35, 0.08, 0); controls.target.set(0, 0.01, 0); }
-    else { camera.position.set(0.28, 0.18, 0.28); controls.target.set(0, 0.01, 0); }
-    controls.update();
+    if (v === 'top') { gsap.to(camera.position, {x:0, y:0.45, z:0.001, duration:1}); }
+    else if (v === 'front') { gsap.to(camera.position, {x:0, y:0.08, z:0.35, duration:1}); }
+    else if (v === 'side') { gsap.to(camera.position, {x:0.35, y:0.08, z:0, duration:1}); }
+    else { gsap.to(camera.position, {x:0.28, y:0.18, z:0.28, duration:1}); }
   };
 });
 </script>
